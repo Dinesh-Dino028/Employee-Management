@@ -1,0 +1,41 @@
+{
+  "name": "serverlessapp",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
+    "start": "npm run build && npm run sam-build && npm run invoke",
+    "list-tables": "aws dynamodb list-tables --endpoint-url http://localhost:8000",
+    "create-table": "aws dynamodb create-table --table-name employee-management-data-table --attribute-definitions AttributeName=id,AttributeType=S --key-schema AttributeName=id,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url http://localhost:8000",
+    "delete-table": "aws dynamodb delete-table --table-name employee-management-data-table --endpoint-url http://localhost:8000",
+    "put-table-item": "aws dynamodb put-item --table-name employee-management-data-table --item '{\"id\": {\"S\": \"1\"}, \"name\": {\"S\": \"John\"}, \"email\": {\"S\": \"john.doe@example.com\"}, \"phone\": {\"S\": \"123-456-7890\"},  \"department\": {\"S\": \"IT\"}, \"designation\": {\"S\": \"Manager\"}}' --endpoint-url http://localhost:8000",
+    "list-items": "aws dynamodb scan --table-name employee-management-data-table --endpoint-url http://localhost:8000",
+    "invoke-event": "sam local invoke EmployeeManagementLambda -e event.json",
+    "invoke": "sam local start-api",
+    "deploy": "sam deploy --guided",
+    "sam-build": "sam build",
+    "docker-up": "docker run -d -p 8000:8000 amazon/dynamodb-local",
+    "docker-compose-up": "docker-compose up -d",
+    "create-login-table": "aws dynamodb create-table --table-name employee-management-login-table --attribute-definitions AttributeName=id,AttributeType=S AttributeName=username,AttributeType=S --key-schema AttributeName=id,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --global-secondary-indexes '[{\"IndexName\":\"UsernameIndex\",\"KeySchema\":[{\"AttributeName\":\"username\",\"KeyType\":\"HASH\"}],\"Projection\":{\"ProjectionType\":\"ALL\"},\"ProvisionedThroughput\":{\"ReadCapacityUnits\":5,\"WriteCapacityUnits\":5}}]' --endpoint-url http://localhost:8000",
+    "put-login-item": "aws dynamodb put-item --table-name employee-management-login-table --item '{\"id\": {\"S\": \"1\"}, \"username\": {\"S\": \"testuser\"}, \"password\": {\"S\": \"testpassword\"}}' --endpoint-url http://localhost:8000"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.734.0",
+    "@aws-sdk/lib-dynamodb": "^3.734.0",
+    "@aws-sdk/util-dynamodb": "^3.734.0",
+    "aws-cdk-lib": "2.173.4",
+    "constructs": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.92",
+    "@types/jest": "^29.5.14",
+    "@types/node": "22.7.9",
+    "aws-cdk": "2.173.4",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.6.3"
+  }
+}

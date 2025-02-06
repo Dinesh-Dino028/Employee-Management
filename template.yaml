@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  EmployeeManagementApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: EmployeeManagementApi
+      StageName: Prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+        AllowCredentials: "'true'"
+
+  EmployeeManagementLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: dist/lambda/handler.commonHandler
+      Runtime: nodejs18.x
+      CodeUri: .
+      MemorySize: 128
+      Timeout: 120
+      Environment:
+        Variables:
+          EMP_DATA_TABLE_NAME: 'employee-management-data-table'
+          EMP_LOGIN_TABLE_NAME: 'employee-management-login-table'
+          IS_OFFLINE: 'true'
+      Events:
+        CreateEmployee:
+            Type: Api
+            Properties:
+              Path: /employee/add
+              Method: ANY #post
+        GetEmployee:
+          Type: Api
+          Properties:
+            Path: /employee/{id}
+            Method: ANY #get
+        GetEmployeeList:
+          Type: Api
+          Properties:
+            Path: /employee/list
+            Method: ANY #get
+        DeleteEmployee:
+          Type: Api
+          Properties:
+            Path: /employee/delete/{id}
+            Method: ANY #delete
+        UpdateEmployee:
+            Type: Api
+            Properties:
+              Path: /employee/update/{id}
+              Method: ANY #put
+        Login:
+          Type: Api
+          Properties:
+            Path: /employee/login
+            Method: ANY #post

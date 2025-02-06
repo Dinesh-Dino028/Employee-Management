@@ -1,0 +1,13 @@
+{
+  "httpMethod": "GET",
+  "path": "/employee/123",
+  "pathParameters": {
+    "id": "123"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": {},
+  "body": null,
+  "isBase64Encoded": false
+}
