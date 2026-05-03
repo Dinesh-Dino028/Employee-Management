@@ -8,6 +8,7 @@ import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 // import { getItemListRequest, getItemRequest } from '../handler/getItemRequest';
 // import { createItemRequest } from '../handler/createItemRequest';
 // import { updateItemRequest } from '../handler/updateItemRequest';
+import { Employee, EmployeeUpdate } from '../types/employee';
 
 // Lambda function handler
 export const commonHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {

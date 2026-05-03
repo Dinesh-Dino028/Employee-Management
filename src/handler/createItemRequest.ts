@@ -1,5 +1,6 @@
 import { createItem } from "../dynamodb/dynamodb";
 import { IllegalArgumentError, EmployeeValidationError } from "../helper/errorList";
+import { Employee } from "../types/employee";
 
 export const createItemRequest = async (requestBody: string): Promise<any> => {
     try {
