@@ -13,7 +13,7 @@ on:
       - main
 
 env:
-  AWS_REGION: ap-south-1  # Change to your preferred region ap-south-1 is mumbai india default
+  AWS_REGION: ap-south-1  # Change to your preferred region 
 
 jobs:
   build-and-test:
