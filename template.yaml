@@ -1,5 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - sit
+      - uat
+      - prod
 Resources:
   EmployeeManagementApi:
     Type: AWS::Serverless::Api
@@ -20,11 +29,16 @@ Resources:
       CodeUri: .
       MemorySize: 128
       Timeout: 120
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Sub 'employee-management-data-table-${Environment}'
+        - DynamoDBCrudPolicy:
+            TableName: !Sub 'employee-management-login-table-${Environment}'
       Environment:
         Variables:
-          EMP_DATA_TABLE_NAME: 'employee-management-data-table'
-          EMP_LOGIN_TABLE_NAME: 'employee-management-login-table'
-          IS_OFFLINE: 'true'
+          EMP_DATA_TABLE_NAME: !Sub 'employee-management-data-table-${Environment}'
+          EMP_LOGIN_TABLE_NAME: !Sub 'employee-management-login-table-${Environment}'
+          IS_OFFLINE: 'false'
       Events:
         CreateEmployee:
             Type: Api
@@ -56,3 +70,36 @@ Resources:
           Properties:
             Path: /employee/login
             Method: ANY #post
+
+  EmployeeDataTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub 'employee-management-data-table-${Environment}'
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  EmployeeLoginTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub 'employee-management-login-table-${Environment}'
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: username
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: UsernameIndex
+          KeySchema:
+            - AttributeName: username
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
